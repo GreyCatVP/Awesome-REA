@@ -36528,5 +36528,32 @@
     ],
     "verification": "source-reviewed",
     "added_at": "2026-11-06"
+  },
+  {
+    "id": "agent-qa",
+    "name": "agent-qa",
+    "url": "https://github.com/vostride/agent-qa",
+    "category": "agent-mcp",
+    "relationship": "independent-agent-integration",
+    "description_en": "agent-qa tests web, Android, and iOS user journeys described in plain language and keeps recorded step evidence. Its CLI, MCP tools, and skills use memidex memory files that carry reviewable knowledge and feedback between runs.",
+    "description_zh": "agent-qa 测试用自然语言描述的 Web、Android 和 iOS 用户旅程，并保留记录下来的步骤证据。其 CLI、MCP 工具与技能使用 memidex 记忆文件，在多次运行之间保留可审阅的知识与反馈。",
+    "evidence_url": "https://github.com/vostride/agent-qa/blob/33cd7dbe52f77d661482977ed0437889d04fdf93/README.md",
+    "verified_at": "2026-10-25",
+    "verification": "source-reviewed",
+    "requirements": [
+      "Node.js 24+, an initialized agent-qa project, and a configured model provider for execution; MCP use also needs an MCP client. Browser or Appium/device setup depends on the target. Provider fees or subscription limits may apply.",
+      "License: FSL-1.1-ALv2."
+    ],
+    "additional_evidence_urls": [
+      "https://vostride.com/docs/agent-qa/coding-agents",
+      "https://vostride.com/docs/agent-qa/guides/mobile-testing",
+      "https://github.com/vostride/agent-qa/blob/33cd7dbe52f77d661482977ed0437889d04fdf93/LICENSE.md"
+    ],
+    "targets": [
+      "website",
+      "app"
+    ],
+    "kind": "integration",
+    "added_at": "2026-11-07"
   }
 ]
