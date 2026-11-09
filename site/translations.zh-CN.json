@@ -40712,5 +40712,13 @@
       "把 yuka.exe 放进游戏目录并运行 yuka help。",
       "README 未注明许可证。"
     ]
+  },
+  "papyrus-compiler": {
+    "name": "Papyrus Compiler（Papyrus 脚本编译器）",
+    "requirements": [
+      "构建需要 V 编译器 0c3183c（0.5.1）。README 的构建命令是 v -o bin\\papyrus-compiler.exe -prod -g -gc none compiler.v。",
+      "compile 命令接受输入路径、输出路径，以及 Form、Actor 这类脚本的头文件目录。",
+      "GitHub 报告许可证为 MIT。"
+    ]
   }
 }
