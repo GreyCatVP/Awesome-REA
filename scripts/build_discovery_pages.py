@@ -22,6 +22,7 @@ from page_metadata import meta_description, page_title
 from sitemaps import latest, record_date
 from structured_data import dataset_node, publisher_reference
 from site_footer import SECTION_LINKS, download_link, site_footer
+from site_identity import CATALOG_DEFINITION
 from source_scope import exclusion_counts, unavailable_clause
 
 
@@ -585,7 +586,7 @@ def build_discovery_pages(site_dir: Path, catalog: dict, source_index: dict | No
 
         path = prefix + '/about/'
         title = '关于合集与数据来源' if zh else 'About the collection and its sources'
-        description = ('AwesomeREA.org 是逆向工程资源合集，收录工具、项目、案例和参考资料。本页说明它与上游 REA 项目的关系，并提供浏览入口、数据下载和来源索引。' if zh else 'AwesomeREA.org is a collection of reverse-engineering tools, projects, case studies, and references.')
+        description = CATALOG_DEFINITION[language]
         summary = (f'{len(resources):,} 项精选资源；{len(scanned):,} 个实际读取 README 的仓库；{browse_count:,} 个可浏览条目。{out_of_scope} 个超出范围的条目{unavailable_clause(unavailable, zh)}保留在完整扫描数据中。'
                    if zh else f'{len(resources):,} curated resources; {len(scanned):,} repositories whose READMEs were fetched; {browse_count:,} browsable entries. The {out_of_scope} out-of-scope entries{unavailable_clause(unavailable, zh)} remain in the complete scan data.')
         if published:
@@ -663,7 +664,7 @@ def build_discovery_pages(site_dir: Path, catalog: dict, source_index: dict | No
 ''' if browsable else ''
     llms = f'''# Awesome Reverse Engineering Anything
 
-> AwesomeREA.org is a bilingual collection of reverse-engineering tools, projects, integrations, case studies, and references for websites, games, apps, native binaries, firmware, and communication protocols.
+> {CATALOG_DEFINITION['en']}
 
 The collection contains {len(resources)} source-reviewed curated resources and {browse_count} browsable repositories from {len(scanned)} successful README scans. The full scan retains {excluded} scope-excluded records and their reasons.{paper_summary}
 
