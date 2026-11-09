@@ -40712,5 +40712,12 @@
       "把 yuka.exe 放进游戏目录并运行 yuka help。",
       "README 未注明许可证。"
     ]
+  },
+  "femto8": {
+    "name": "femto8：PICO-8 幻想主机的重实现",
+    "requirements": [
+      "桌面构建需要 SDL2 开发文件和 pkg-config，然后执行 make。README 给出了 Debian/Ubuntu、Fedora、Homebrew 和 MSYS2 的软件包名。",
+      "GitHub 报告许可证为 MIT。"
+    ]
   }
 }
