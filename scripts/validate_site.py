@@ -31,7 +31,8 @@ from public_source_supplements import (PUBLISHED_FILENAME, compose_published, js
 from validate_discovery import expected_entry_routes, validate_route_inventory
 from build_readme import (CASE_FILES, README_SIZE_WARNING, CATEGORIES, METHOD_SECTIONS, PAPER_SECTIONS, REQUIREMENTS_LABEL, case_method,
                           collection_section, method_groups, paper_section)
-from build_discovery_pages import ABOUT_EXCLUDED_SECTIONS, SECTION_TARGETS, file_size_label
+from build_discovery_pages import ABOUT_EXCLUDED_SECTIONS, file_size_label
+from data_classes import DATA_CLASSES, listed_records
 from build_feed import (DISCOVERY_LABELS, DISCOVERY_PATHS, DISCOVERY_TERM, FEED_PAGES, FEED_PATHS, FEED_SIZE,
                         discovery_summary, entry_time, feed_entries, merged_entries)
 import build_discoveries
@@ -1195,59 +1196,6 @@ def validate_case_outputs(pages, resources):
             assert [record['id'] for record in listed] == expected, f'Case method groups are out of order: {route}#cases-{section}'
 
 
-class SectionTargetCounts(HTMLParser):
-    """Each top-level /resources/ or /cases/ section: its key, its card count and its target count line, if any."""
-    def __init__(self, text):
-        super().__init__()
-        self.sections, self._stack = [], []
-        self.feed(text)
-
-    def handle_starttag(self, tag, attrs):
-        values = dict(attrs)
-        if tag == 'section':
-            labels = (values.get('aria-labelledby') or '').split()
-            # Sub-group regions are labelled by two IDs; their cards count toward the enclosing section.
-            key = values.get('data-case-section') or (labels[0].removeprefix('heading-') if len(labels) == 1 and labels[0].startswith('heading-') else None)
-            section = {'key': key, 'cards': 0, 'line': None} if key else None
-            if section:
-                self.sections.append(section)
-            self._stack.append(section)
-        current = next((section for section in reversed(self._stack) if section), None)
-        if current and tag == 'article' and 'data-resource-id' in values:
-            current['cards'] += 1
-        if current and tag == 'p' and 'section-target-count' in values.get('class', '').split():
-            assert current['line'] is None, f'Section has two target count lines: {current["key"]}'
-            current['line'] = values
-
-    def handle_endtag(self, tag):
-        if tag == 'section' and self._stack:
-            self._stack.pop()
-
-
-def validate_section_target_counts(output, resources):
-    """Every target section's count line reconciles with its cards: tagged, minus filed elsewhere, plus listed here untagged."""
-    output = Path(output)
-    subsets = {'cases': [record for record in resources if record['kind'] == 'case-study']}
-    for route, records in subsets.items():
-        for prefix in ('', 'zh/'):
-            sections = SectionTargetCounts((output / f'{prefix}{route}' / 'index.html').read_text(encoding='utf-8')).sections
-            assert sections, f'No sections found on /{prefix}{route}/'
-            for section in sections:
-                key, line, target = section['key'], section['line'], SECTION_TARGETS.get(section['key'])
-                label = f'/{prefix}{route}/ {key}'
-                if target is None:
-                    assert line is None, f'Only target sections have a target count line: {label}'
-                    continue
-                assert line is not None and line.get('data-section-target') == target, f'Target section lacks its count line: {label}'
-                tagged = [record for record in records if target in record['targets']]
-                expected = (len(tagged), sum(collection_section(record) != key for record in tagged),
-                            sum(target not in record['targets'] and collection_section(record) == key for record in records))
-                found = tuple(int(line.get(name, '-1')) for name in ('data-target-tagged', 'data-target-elsewhere', 'data-target-untagged-here'))
-                assert found == expected, f'Target count line differs from the catalog on {label}: {found} != {expected}'
-                assert section['cards'] == found[0] - found[1] + found[2], (
-                    f'{label}: {section["cards"]} cards, but the count line implies {found[0]} - {found[1]} + {found[2]}')
-
-
 def validate_feeds(output, pages, resources, papers, discovery_batches=None):
     """Bind both Atom feeds to dated catalog records and their localized detail pages.
 
@@ -1400,9 +1348,9 @@ def validate_discovery_outputs(output, pages, queue):
     assert badge == build_discoveries.badge_document(queue), 'Discovery badge differs from the latest ingest'
 
 
-def validate_resource_listing(pages, resources):
+def validate_resource_listing(pages, resources, papers=()):
     """The /resources/ ItemList names each visible card's detail page, in card order."""
-    records = {record['id']: record for record in resources}
+    records = {record['id']: record for record in listed_records(resources, papers)}
     for language, prefix in (('en', ''), ('zh', '/zh')):
         route = prefix + '/resources/'
         page = pages[route]
@@ -1415,9 +1363,19 @@ def validate_resource_listing(pages, resources):
             record = records[identifier]
             name = (record.get('name_zh') or record['name']) if language == 'zh' else record['name']
             expected.append({'@type': 'ListItem', 'position': position, 'name': name,
-                             'url': f'{ORIGIN}{prefix}/resources/{identifier}/'})
+                             'url': f"{ORIGIN}{prefix}/{record.get('route', 'resources')}/{identifier}/"})
         assert items.get('@type') == 'ItemList' and items.get('numberOfItems') == len(expected), f'Resource schema count mismatch: {route}'
         assert items.get('itemListElement') == expected, f'Resource structured list differs from visible cards or detail pages: {route}'
+        for key in DATA_CLASSES:
+            class_route = f'{prefix}/data/{key}/'
+            class_page = pages[class_route]
+            expected_records = sorted((record for record in records.values() if record.get('class') == key),
+                                      key=lambda record: (record.get('added_at') or '', record.get('verified_at') or '', record['id']), reverse=True)
+            assert class_page.record_ids == [record['id'] for record in expected_records], f'Class rows differ or are out of order: {class_route}'
+            collections = list(schema_entities(class_page.schemas, 'CollectionPage'))
+            assert len(collections) == 1, f'Class page needs one CollectionPage: {class_route}'
+            class_items = collections[0]['mainEntity']['itemListElement']
+            assert [item['url'] for item in class_items] == [f"{ORIGIN}{prefix}/{record.get('route', 'resources')}/{record['id']}/" for record in expected_records], f'Class ItemList differs: {class_route}'
 
 
 def validate_entry_outputs(pages, resources, papers):
@@ -1430,7 +1388,7 @@ def validate_entry_outputs(pages, resources, papers):
     for kind, directory in (('resource', 'resources'), ('paper', 'papers')):
         for language, prefix in (('en', ''), ('zh', '/zh')):
             listing = pages[f'{prefix}/{directory}/']
-            links = listing.detail_links
+            links = [link for link in listing.detail_links if link['id'] in catalogs[kind]]
             assert len(links) == len(catalogs[kind]), f'Detail link count mismatch: {prefix}/{directory}/'
             assert {link['id'] for link in links} == set(catalogs[kind]), f'Detail link IDs mismatch: {prefix}/{directory}/'
             for link in links:
@@ -1602,7 +1560,7 @@ def main():
         assert problem is None, f'{problem}: {parsed.path}: {page.meta.get("description")}'
     validate_link_fragments(OUTPUT, pages, fragment_links)
     validate_homepage_destinations(pages)
-    validate_resource_listing(pages, resources)
+    validate_resource_listing(pages, resources, papers)
     validate_requirements_label()
     validate_paper_outputs(OUTPUT, pages)
     report_listing_sizes(OUTPUT)
@@ -1618,7 +1576,6 @@ def main():
                            repository_document=published_repository_document(OUTPUT), discovery_queue=queue,
                            lead_queue=lead_queue if lead_queue['batches'] else None)
     validate_case_outputs(pages, resources)
-    validate_section_target_counts(OUTPUT, resources)
     catalog_meta = json.loads((OUTPUT / 'catalog.json').read_text(encoding='utf-8'))['meta']
     validate_shared_footer(OUTPUT, catalog_meta['repository_url'],
                            catalog_meta['source_index'].get('full_export') or 'source-index.json')
