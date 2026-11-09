@@ -40712,5 +40712,13 @@
       "把 yuka.exe 放进游戏目录并运行 yuka help。",
       "README 未注明许可证。"
     ]
+  },
+  "kirbydreamland": {
+    "name": "kirbydreamland：《星之卡比》反汇编",
+    "requirements": [
+      "构建前按 INSTALL.md 准备仓库。",
+      "README 将构建出的 ROM 标为 Kirby's Dream Land (UE) [!].gb，MD5 为 A66E4918EDCD042EC171A57FE3CE36C3。",
+      "GitHub 上该仓库的许可证元数据为空。"
+    ]
   }
 }
