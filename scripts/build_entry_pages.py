@@ -10,6 +10,7 @@ from urllib.parse import quote, urlencode, urlsplit
 from artifact_links import github_repository
 from build_discovery_pages import PRIMARY_SOURCE_LABEL, SECTIONS, jsonld_script, publication_keys
 from build_paper_pages import AUTHORS_OMITTED, STATUS_LABELS, authors_omitted, formatted_date, scholarly_article
+from data_classes import placement_facts
 from build_readme import (CATEGORIES, KIND_LABELS, RELATIONSHIPS, REQUIREMENTS_LABEL, TARGETS, collection_section,
                           section_order)
 from agent_formats import (MARKDOWN, RECORD_JSON, alternate_links, json_text, paper_markdown, paper_record,
@@ -229,7 +230,7 @@ def _resource_content(record: dict, language: str, discussion: str = '', feedbac
     # The kind is the eyebrow; the other classification facts and the review date sit under the
     # description so they stay above long requirement lists. Each fact appears only here.
     reviewed = f'<time datetime="{escape(record["verified_at"], quote=True)}">{escape(record["verified_at"][:10])}</time>'
-    facts = [(label('Targets', '目标'), escape(' · '.join(TARGETS[t][int(zh)] for t in record['targets']))),
+    facts = [*((name, escape(value)) for name, value in placement_facts(record, zh, TARGETS)),
              (label('Category', '类别'), escape(CATEGORIES[record['category']][int(zh)])),
              (label('Relationship', '关联'), escape(RELATIONSHIPS[record['relationship']][int(zh)])),
              (label('Sources reviewed', '来源复核于'), reviewed)]

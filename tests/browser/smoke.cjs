@@ -273,17 +273,17 @@ async function homepageClassFilter(page, language, viewport) {
 // /resources/ holds every record; filters change the list in place, and section links return to the whole list.
 async function resourceListing(page, language, viewport, data) {
   const label = `${language} resources ${viewport.name}`;
-  const total = data.catalog.resources.length;
+  const total = data.catalog.resources.filter(record => record.class).length;
   const route = language === 'zh' ? '/zh/resources/' : '/resources/';
   const rows = () => count(page, '[data-cards] > .card');
   assert.equal(await rows(), total, `${label}: every record is in the page`);
   await noOverflow(page, label);
   const before = await page.$eval('[data-results-meta]', node => node.textContent);
-  await press(page, '.page-head .folder[data-target="protocol"]');
+  await press(page, '.page-head .folder[data-tab="tools"]');
   await page.waitForFunction(all => document.querySelectorAll('[data-cards] > .card').length < all, {timeout: 20000}, total);
-  assert.equal(new URL(page.url()).searchParams.get('target'), 'protocol', `${label}: the filter is in the URL`);
+  assert.equal(new URL(page.url()).searchParams.get('tab'), 'tools', `${label}: the filter is in the URL`);
   assert.notEqual(await page.$eval('[data-results-meta]', node => node.textContent), before, `${label}: the count follows the filter`);
-  await page.goto(page.url().split('?')[0] + '?target=protocol&kind=tool');
+  await page.goto(page.url().split('?')[0] + '?tab=tools&target=protocol&kind=tool');
   await page.waitForFunction(all => document.querySelectorAll('[data-cards] > .card').length < all, {timeout: 20000}, total);
   const opened = await page.$$eval('[data-cards] > .card .callno', nodes => nodes.map(node => node.textContent));
   assert.ok(opened.length && opened.every(text => /tool|工具/i.test(text)), `${label}: a shared link opens the same filter`);
@@ -311,7 +311,7 @@ async function resourceListing(page, language, viewport, data) {
     const {pages, start, end} = window.REA_SEARCH.pageRange(rows, 60, page);
     return [pages, end - start];
   })), [[1, 61], [1, 64], [2, 60], [2, 5], [2, 61], [2, 60], [1, 0], [1, 3]], `${label}: a last page never holds under five rows`);
-  await page.goto(page.url().split('#')[0] + '#' + data.catalog.resources[data.catalog.resources.length - 1].id);
+  await page.goto(page.url().split('#')[0] + '#' + data.catalog.resources.find(record => record.class).id);
   await page.waitForFunction(() => { const top = document.getElementById(location.hash.slice(1)).getBoundingClientRect().top; return top >= 0 && top < innerHeight; }, {timeout: 5000});
 }
 
@@ -598,29 +598,11 @@ async function midWidthPaperRows(page, label, viewport) {
   await page.setViewport({width: viewport.width, height: viewport.height});
 }
 
-// Each target section's count line adds up to the cards it heads: tagged, minus filed elsewhere, plus listed here
-// without the tag. The line wraps inside the viewport.
-async function sectionTargetCounts(page, label) {
-  const lines = await page.$$eval('.section-target-count', nodes => nodes.map(line => ({
-    target: line.dataset.sectionTarget,
-    cards: line.closest('section').querySelectorAll('[data-resource-id]').length,
-    stated: ['targetTagged', 'targetElsewhere', 'targetUntaggedHere'].map(key => Number(line.dataset[key])),
-    right: line.getBoundingClientRect().right,
-  })));
-  assert(lines.length > 0, `${label}: target sections state their tag counts`);
-  const width = await page.evaluate(() => document.documentElement.clientWidth);
-  for (const {target, cards, stated: [tagged, elsewhere, untagged], right} of lines) {
-    assert.equal(cards, tagged - elsewhere + untagged, `${label}: ${target} section holds ${cards} cards, but its line states ${tagged} - ${elsewhere} + ${untagged}`);
-    assert(right <= width + 1, `${label}: the ${target} count line extends past the viewport (${right}px of ${width}px)`);
-  }
-}
-
 async function staticPage(page, route, viewport) {
   const label = `${route} ${viewport.name}`;
   assert((await page.$eval('h1', heading => heading.textContent.trim())).length > 0, `${label}: visible heading`);
   await noOverflow(page, label);
   if (route === '/papers/' || route === '/zh/papers/') await paperDirectory(page, route, viewport);
-  if (route === '/cases/' || route === '/zh/cases/') await sectionTargetCounts(page, label);
   if (route === '/cases/' || route === '/zh/cases/') {
     const review = await page.$eval('#review-method', section => ({
       title: section.querySelector('h2').textContent,
@@ -637,7 +619,9 @@ async function staticPage(page, route, viewport) {
   const read = file => JSON.parse(fs.readFileSync(path.join(dist, file), 'utf8'));
   const data = {catalog: read('catalog.json'), browser: read('source-browser.json')};
   const category = fs.readdirSync(path.join(dist, 'zh/browse')).filter(name => fs.statSync(path.join(dist, 'zh/browse', name)).isDirectory()).sort()[0];
-  const routes = ['/papers/', '/zh/papers/', '/resources/', '/zh/resources/', '/cases/', '/zh/cases/', '/about/', '/zh/about/', '/contribute/', '/zh/contribute/',
+  const routes = ['/papers/', '/zh/papers/', '/resources/', '/zh/resources/',
+    ...['software', 'game', 'apps', 'website', 'hardware', 'science'].flatMap(cls => [`/data/${cls}/`, `/zh/data/${cls}/`]),
+    '/cases/', '/zh/cases/', '/about/', '/zh/about/', '/contribute/', '/zh/contribute/',
     '/browse/', `/zh/browse/${category}/`, `/resources/${data.catalog.resources[0].id}/`];
   fs.rmSync(screenshots, {recursive: true, force: true}); fs.mkdirSync(screenshots, {recursive: true});
   const site = server(headerRules(fs.readFileSync(path.join(dist, '_headers'), 'utf8')));

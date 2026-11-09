@@ -8,6 +8,7 @@ from urllib.parse import urlsplit, unquote
 from urllib.robotparser import RobotFileParser
 
 from build_browse_pages import CATEGORIES
+from data_classes import DATA_CLASSES
 from crawl_policy import CONTENT_SIGNAL, CRAWLERS, REQUIRED_AI_CRAWLERS, TRAINING_PREFERENCE_TOKEN
 from sitemaps import (SECTION_FILES, SITEMAP_INDEX, english_path, instant, language_alternates, latest,
                       normalized_date, page_dates, read_sitemaps, record_date, section_for)
@@ -40,6 +41,7 @@ def validate_route_inventory(urls, resources, papers, *, include_browse=True, in
     expected = set(routes)
     for prefix in ("", "/zh"):
         expected.update(prefix + path for path in ("/", "/resources/", "/cases/", "/papers/", "/survey/", "/about/", "/contribute/", "/api/"))
+        expected.update(f'{prefix}/data/{key}/' for key in DATA_CLASSES)
         if include_browse:
             expected.add(prefix + "/browse/")
             expected.update(f"{prefix}/browse/{category}/" for category in CATEGORIES)
@@ -199,7 +201,9 @@ def main():
             other = documents.get(link["href"])
             assert other is not None, f"Language alternative absent from sitemap: {url}"
             assert any(item.get("rel") == "alternate" and item.get("href") == url for item in other.links), url
-    expected = {r["id"] for r in records}
+    paper_list = papers["papers"] if isinstance(papers, dict) else papers
+    # /resources/ lists every curated resource and, in its class, every benchmark or dataset paper.
+    expected = {r["id"] for r in records} | {p["id"] for p in paper_list if "class" in p}
     for path in ("/resources/", "/zh/resources/"):
         page = documents[ORIGIN + path]
         assert len(page.resources) == len(expected) and set(page.resources) == expected, path
