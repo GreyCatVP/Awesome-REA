@@ -577,6 +577,7 @@
 - [**Alleyway：带注释的 Game Boy 反汇编与反编译**](https://github.com/islander0/alleyway-decomp) - Alleyway 项目记录 Game Boy 游戏 World 版 ROM 的反汇编及实验性 C 反编译。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/alleyway-game-boy-decomp-case/)</sub>
 - [**Amplitude：进行中的 PS2 游戏反编译**](https://github.com/ieee802dot11ac/amp) - Amplitude（2003）是针对 NTSC-U/C 零售版的反编译项目。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/amplitude-2003-case/)</sub>
 - [**Angry Birds Decompilation：Lua 脚本恢复**](https://github.com/jooapa/Angry_Birds_Decompilation) - Angry Birds Decompilation 记录如何从《愤怒的小鸟》PC 移植版中恢复 Lua 脚本。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/angry-birds-decomp/)</sub>
+- [**asteroids-disassembly：《小行星》街机固件反汇编**](https://github.com/nmikstas/asteroids-disassembly) - asteroids-disassembly 是街机游戏《小行星》固件的反汇编。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/asteroids-disassembly/)</sub>
 - [**AutoDestruct-xport：Auto Destruct 原生移植**](https://github.com/psxports/AutoDestruct-xport) - AutoDestruct-xport 将 PlayStation 游戏《Auto Destruct》的反编译代码移植到 C 语言运行时，提供 Windows 和网页入口。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/autodestruct-xport-case/)</sub>
 - [**AutoZone Hot Pursuit：重建 Need for Speed: Hot Pursuit**](https://github.com/americusmaximus/AZHP) - AutoZone Hot Pursuit 基于原始二进制分析，以 C++ 重建 1998 年的 Need for Speed: Hot Pursuit 及 Modern Patch。 <sub>案例 · 独立重建 · 也适用：二进制 · [完整条目](https://awesomerea.org/zh/resources/autozone-hot-pursuit-case/)</sub>
 - [**AZHS：重建《Need for Speed: High Stakes》4.50**](https://github.com/americusmaximus/AZHS) - AZHS 根据《Need for Speed: High Stakes》4.50 的原版二进制文件重建源码。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/azhs-case/)</sub>
@@ -632,5 +633,4 @@
 - [**dynamitedan：《Dynamite Dan》反汇编与注释**](https://github.com/Ritchie333/dynamitedan) - dynamitedan 收录了 1985 年电脑游戏《Dynamite Dan》的带注释反汇编。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/dynamitedan-case/)</sub>
 - [**Eltale Monsters：基于 ROM 的反编译项目**](https://github.com/Mallos31/EM) - 该项目利用用户提供的《Eltale Monsters》原版 ROM 进行反编译。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/eltale-monsters-decomp-case/)</sub>
 - [**Everyone's A Wally：ZX Spectrum 游戏反汇编**](https://github.com/Ritchie333/wally) - wally 是 ZX Spectrum 游戏《Everyone's A Wally》的反汇编。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/everyones-a-wally-disassembly-case/)</sub>
-- [**Extreme-G 2：N64 功能性反编译**](https://github.com/Teraunce/xg-2-decomp) - 使用 IDO 7.1 将 N64 游戏《Extreme-G 2》重建为 C 和汇编代码，目标是功能等效，而非使 C 代码的构建结果逐字节一致。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/extreme-g-2-n64-decomp-case/)</sub>
 <!-- END GENERATED CASES -->
