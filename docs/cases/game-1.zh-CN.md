@@ -237,6 +237,7 @@
 - [**Kirby’s Epic Yarn：反编译美版 Wii 游戏**](https://github.com/Swiftshine/key) - 该仓库是《毛线卡比》的进行中反编译。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/kirby-epic-yarn-decomp/)</sub>
 - [**Kirby's Tilt 'n' Tumble：Game Boy Color 反汇编**](https://github.com/davFaithid/tilt-n-tumble) - 该项目将《星之卡比：倾斜翻滚》表示为按存储区组织的 Game Boy Color 汇编代码，并用 RGBDS 构建。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/kirby-tilt-n-tumble-disassembly-case/)</sub>
 - [**Kirby: Nightmare in Dream Land：Game Boy Advance 匹配反编译**](https://github.com/overjt/knidl) - Kirby: Nightmare in Dream Land decomp 以 C 重建美版 Game Boy Advance 游戏，少量运行时代码保留为带标签汇编。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/kirby-nightmare-in-dream-land-decomp-case/)</sub>
+- [**kirbydreamland：《星之卡比》反汇编**](https://github.com/huderlem/kirbydreamland) - kirbydreamland 是 Game Boy 游戏《星之卡比》的反汇编。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/kirbydreamland/)</sub>
 - [**Klonoa 2: Lunatea’s Veil：PlayStation 2 匹配反编译**](https://github.com/entriphy/kl2_lv_decomp) - 这是 PlayStation 2 游戏 Klonoa 2: Lunatea's Veil 的匹配反编译，NTSC 编号 SLUS\_201.51。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/kl2-lv-decomp/)</sub>
 - [**Klonoa: Empire of Dreams：GBA 游戏逐字节匹配反编译**](https://github.com/Dream-Atelier/kl-eod-decomp) - Klonoa: Empire of Dreams 将美版 Game Boy Advance 游戏逐步重建为 C 源码，以生成逐字节一致的 ROM。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/klonoa-empire-of-dreams-decomp-case/)</sub>
 - [**lbtvg：LEGO Batman: The Videogame 匹配式反编译**](https://github.com/wasdhjklxyz/lbtvg) - lbtvg 重建 2008 年 PC 游戏 LEGO Batman: The Videogame 的 C++ 源码，并将构建结果与参考可执行文件比较。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/lbtvg-lego-batman-case/)</sub>
@@ -632,5 +633,4 @@
 - [**dynamitedan：《Dynamite Dan》反汇编与注释**](https://github.com/Ritchie333/dynamitedan) - dynamitedan 收录了 1985 年电脑游戏《Dynamite Dan》的带注释反汇编。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/dynamitedan-case/)</sub>
 - [**Eltale Monsters：基于 ROM 的反编译项目**](https://github.com/Mallos31/EM) - 该项目利用用户提供的《Eltale Monsters》原版 ROM 进行反编译。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/eltale-monsters-decomp-case/)</sub>
 - [**Everyone's A Wally：ZX Spectrum 游戏反汇编**](https://github.com/Ritchie333/wally) - wally 是 ZX Spectrum 游戏《Everyone's A Wally》的反汇编。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/everyones-a-wally-disassembly-case/)</sub>
-- [**Extreme-G 2：N64 功能性反编译**](https://github.com/Teraunce/xg-2-decomp) - 使用 IDO 7.1 将 N64 游戏《Extreme-G 2》重建为 C 和汇编代码，目标是功能等效，而非使 C 代码的构建结果逐字节一致。 <sub>案例 · 独立重建 · [完整条目](https://awesomerea.org/zh/resources/extreme-g-2-n64-decomp-case/)</sub>
 <!-- END GENERATED CASES -->
